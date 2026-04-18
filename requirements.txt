@@ -1,0 +1,16 @@
+# Orchestration & LLM
+langchain>=0.1.0
+openai>=1.12.0
+
+# Vector Database & Retrieval
+chromadb>=0.4.22
+sentence-transformers>=2.5.1
+tiktoken>=0.6.0
+PyPDF2>=3.0.0
+
+# Formal Verification (NLI)
+transformers>=4.38.0
+torch>=2.2.0
+
+# Utilities
+python-dotenv>=1.0.1
