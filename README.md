@@ -16,3 +16,7 @@ Based on our approved proposal, the system consists of the following baseline mo
 - **In-Scope:** Text-based academic claim synthesis, PDF/text document ingestion, multi-agent pipeline orchestration, NLI-based fact verification.
 - **Out-of-Scope:** Image/video generation, unstructured web scraping, real-time database updates.
 - **Tech Stack Baseline:** Python 3.10+, LangChain/AutoGen (for agent orchestration), SentenceTransformers (for NLI), FAISS/ChromaDB (for vector storage).
+
+## Contributors
+* Ali Utku Pekel
+* Alperen Atalay
