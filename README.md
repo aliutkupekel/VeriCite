@@ -20,3 +20,4 @@ Based on our approved proposal, the system consists of the following baseline mo
 ## Contributors
 * Ali Utku Pekel
 * Alperen Atalay
+* Niyazi Berke Gurbuzler
