@@ -1,39 +1,49 @@
 import os
 from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class RefinementAgent:
     def __init__(self):
-        self.name = "Refinement Agent"
-        # We use a lower temperature here (0.1) because we want strict correction, not creativity
+        self.name = "Refinement"
         self.llm = ChatGroq(
-            temperature=0.1, 
-            model_name="llama3-8b-8192",
-            groq_api_key=os.getenv("GROQ_API_KEY")
+            groq_api_key=os.getenv("GROQ_API_KEY"),
+            model_name="llama-3.1-8b-instant",
+            temperature=0.1
         )
 
-    def refine_claim(self, claim, nli_result):
-        print(f"[{self.name}]: Fixing rejected claim {claim['claim_id']}...")
+    # İŞTE BURAYI DÜZELTTİK: Artık nli_result (Hakem raporu) parametresini de kabul ediyor
+    def refine_claim(self, claim_data, nli_result):
+        print(f"[{self.name}]: Refining claim to better match source evidence... (Previous NLI Score: {nli_result['score']:.2f})")
         
-        prompt = PromptTemplate.from_template(
-            "You are a strict academic corrector. A previous AI generated a claim that FAILED a Natural Language Inference (NLI) check against the source abstract.\n"
-            "Reason for failure: The relationship was evaluated as '{nli_label}' with a confidence score of {nli_score}.\n\n"
-            "Source Abstract: {abstract}\n"
-            "Rejected Claim: {claim_text}\n\n"
-            "Task: Rewrite the claim into a single, highly accurate sentence that is STRICTLY supported by the abstract. Do NOT invent information.\n"
-            "Revised Claim:"
+        prompt = PromptTemplate(
+            input_variables=["claim", "abstract", "details"],
+            template="""You are an academic editor. 
+The following claim failed verification because it hallucinated or mismatched the source.
+Reason for failure: {details}
+
+Original Claim: {claim}
+Source Abstract: {abstract}
+
+Rewrite the claim as exactly ONE single academic sentence so it is 100% grounded in the source. Do not add conversational text."""
         )
         
         chain = prompt | self.llm
-        response = chain.invoke({
-            "nli_label": nli_result['label'],
-            "nli_score": nli_result['score'],
-            "abstract": claim['source_abstract'],
-            "claim_text": claim['text']
-        })
         
-        # Update the claim with the newly corrected text
-        claim['text'] = response.content.strip()
-        print(f"[{self.name}]: Claim {claim['claim_id']} rewritten successfully.")
-        
-        return claim
+        try:
+            response = chain.invoke({
+                "claim": claim_data['claim'],
+                "abstract": claim_data['source_chunk']['abstract'],
+                "details": nli_result['details']
+            })
+            refined_sentence = response.content.replace('\n', ' ').strip()
+            
+            updated_claim_data = claim_data.copy()
+            updated_claim_data['claim'] = refined_sentence
+            return updated_claim_data
+            
+        except Exception as e:
+            print(f"[{self.name}]: Error refining claim - {e}")
+            return claim_data
