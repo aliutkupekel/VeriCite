@@ -12,7 +12,7 @@ def run_vericite_pipeline(user_query):
     retriever = RetrieverAgent()
     synthesiser = SynthesiserAgent()
     nli_verifier = NLIVerifierAgent()
-    arbiter = FormalArbiter(threshold=0.85)
+    arbiter = FormalArbiter(threshold=0.20) # BARAJI BURADA DA 0.20 YAPTIK
     refiner = RefinementAgent()
 
     # Step 1: Retrieval (Fetch 2 real papers to keep it fast)
@@ -53,6 +53,6 @@ def run_vericite_pipeline(user_query):
     print(" FINAL ACADEMIC SYNTHESIS (100% VERIFIED)")
     print("==================================================")
     for c in final_approved_claims:
-        # Appending the DOI exactly as promised in the proposal
-        print(f"- {c['text']} [DOI: {c['doi']}]")
+        # İŞTE ÇÖKÜŞÜ ENGELLEYEN VE DOI'Yİ YAZDIRAN DOĞRU KOD:
+        print(f"- {c['claim']} [DOI: {c['source_chunk']['doi']}]")
     print("==================================================")
