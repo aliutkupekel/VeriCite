@@ -9,7 +9,7 @@ Based on our approved proposal, the system consists of the following baseline mo
 1. **Retriever Agent:** Hybrid dense-sparse retrieval (RAG + Chunking).
 2. **Synthesiser Agent:** Draft generation based on retrieved chunks.
 3. **NLI Verifier Agent:** Entailment checking using a dedicated Cross-Encoder model.
-4. **Formal Arbiter:** The strict logic gate that enforces the $\tau \geq 0.85$ confidence threshold.
+4. **Formal Arbiter:** The strict logic gate that enforces the $\tau \geq 0.85$ (0.20 updated) confidence threshold.
 5. **Refinement Agent:** Targeted rewriting (Max $k=3$ iterations).
 
 ## Scope & Requirements (Finalized)
