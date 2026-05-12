@@ -84,11 +84,25 @@ if st.button("🚀 Run VeriCite Pipeline", type="primary"):
                             
         st.divider()
         
-        # 4. Aşama: FİNAL EKRANI
+ # 4. Aşama: FİNAL EKRANI
         st.subheader("🏆 FINAL ACADEMIC SYNTHESIS (100% VERIFIED)")
         if final_approved_claims:
             for c in final_approved_claims:
-                st.info(f"**{c['claim']}** \n🔗 *[DOI: {c['source_chunk']['doi']}]*")
+                doi_raw = c['source_chunk']['doi']
+                
+                # DOI formatına göre otomatik tıklanabilir link oluşturma
+                if doi_raw.startswith("10."):
+                    url = f"https://doi.org/{doi_raw}"
+                elif doi_raw.startswith("arXiv:"):
+                    arxiv_id = doi_raw.replace("arXiv:", "")
+                    url = f"https://arxiv.org/abs/{arxiv_id}"
+                else:
+                    # Ne olur ne olmaz, bilinmeyen bir format gelirse Google'da arat
+                    url = f"https://www.google.com/search?q={doi_raw}"
+                
+                # Streamlit Markdown ile tıklanabilir link basıyoruz
+                st.info(f"**{c['claim']}** \n\n🔗 **Source:** [{doi_raw}]({url})")
+                
             st.balloons() # Başarı animasyonu!
         else:
             st.error("No claims survived the strict verification process. Please try a different query.")
