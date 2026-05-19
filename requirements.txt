@@ -16,3 +16,6 @@ numpy==1.26.4
 
 # --- User Interface (UI) ---
 streamlit==1.37.0
+
+# --- Graph results ---
+matplotlib==3.9.2
